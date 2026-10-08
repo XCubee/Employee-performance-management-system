@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}My Team{% endblock %}
+{% block content %}
+<h2>My Team</h2>
+{% if team %}
+<table>
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Designation</th><th>Department</th><th>Work done</th><th>Profile</th></tr>
+  </thead>
+  <tbody>
+    {% for employee in team %}
+    <tr>
+      <td>{{ employee.emp_id }}</td>
+      <td>{{ employee.name }}</td>
+      <td>{{ employee.email }}</td>
+      <td>{{ employee.designation or '-' }}</td>
+      <td>{{ employee.department or '-' }}</td>
+      <td>{{ employee.work_completion }}%</td>
+      <td><button type="button" class="candidate-view-button" data-profile-id="{{ employee.emp_id }}" aria-haspopup="dialog">View profile</button></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<dialog class="employee-profile-dialog" id="team-profile-dialog" aria-label="Team member profile">
+  <button type="button" class="dialog-close-button" aria-label="Close profile">Close</button>
+  {% for employee in team %}
+  <article class="employee-detail-card" data-profile-details="{{ employee.emp_id }}" hidden>
+    <h3>{{ employee.name }}</h3>
+    <p>{{ employee.designation or 'Employee' }}{% if employee.department %} · {{ employee.department }}{% endif %}</p>
+    <dl>
+      <dt>Email</dt><dd>{{ employee.email or '-' }}</dd>
+      <dt>Role</dt><dd>{{ employee.role or '-' }}</dd>
+      <dt>Department</dt><dd>{{ employee.department or '-' }}</dd>
+      <dt>Designation</dt><dd>{{ employee.designation or '-' }}</dd>
+      <dt>Work done</dt><dd>{{ employee.work_completion }}% ({{ employee.tasks|length }} assigned task{{ '' if employee.tasks|length == 1 else 's' }})</dd>
+    </dl>
+    <h4>Tasks</h4>
+    {% if employee.tasks %}
+    <ul class="employee-active-tasks">
+      {% for task in employee.tasks %}
+      <li><strong>{{ task.title }}</strong><span>{{ task.status|replace('_', ' ')|title }} · {{ task.priority|default('medium', true)|title }} priority</span>{% if task.due_date %}<span>Due {{ task.due_date }}</span>{% endif %}</li>
+      {% endfor %}
+    </ul>
+    {% else %}<p>No tasks assigned.</p>{% endif %}
+    <h4>Feedback</h4>
+    {% if employee.feedback %}
+    <ul class="employee-feedback-list">
+      {% for item in employee.feedback %}
+      <li><p>{{ item.feedback_text }}</p><span>{{ item.given_by_name or 'Unknown' }} · {{ item.created_at or 'Date unavailable' }}</span></li>
+      {% endfor %}
+    </ul>
+    {% else %}<p>No feedback recorded.</p>{% endif %}
+  </article>
+  {% endfor %}
+</dialog>
+<script>
+  const teamProfileDialog = document.getElementById("team-profile-dialog");
+  if (teamProfileDialog) {
+    const profileCards = teamProfileDialog.querySelectorAll("[data-profile-details]");
+    document.querySelectorAll("[data-profile-id]").forEach((button) => {
+      button.addEventListener("click", () => {
+        profileCards.forEach((card) => {
+          card.hidden = card.dataset.profileDetails !== button.dataset.profileId;
+        });
+        teamProfileDialog.showModal();
+      });
+    });
+    teamProfileDialog.querySelector(".dialog-close-button").addEventListener("click", () => {
+      teamProfileDialog.close();
+    });
+  }
+</script>
+{% else %}
+<p>No team members found.</p>
+{% endif %}
+{% endblock %}

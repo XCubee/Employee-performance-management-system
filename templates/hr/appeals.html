@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block title %}HR Appeals{% endblock %}{% block content %}
+<h2>HR Appeals and Grievances</h2>
+{% if appeals %}
+<table border="1">
+  <tr><th>Employee</th><th>Raised By</th><th>Authority</th><th>Subject</th><th>Status</th></tr>
+  {% for a in appeals %}
+  <tr><td>{{ a.employee_name or a.emp_id }}</td><td>{{ a.raised_by_name or a.raised_by }}</td><td>{{ a.authority }}</td><td>{{ a.subject }}</td><td>{{ a.status }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}<p>No appeals found.</p>{% endif %}
+{% endblock %}

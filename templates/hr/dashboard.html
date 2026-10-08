@@ -1,0 +1,19 @@
+{% extends 'base.html' %}{% block title %}HR Dashboard{% endblock %}{% block content %}
+<h2>HR Dashboard</h2>
+<div class="dashboard-grid">
+  <a class="info-box" href="{{url_for('hr_employees')}}"><strong>{{ employees|length }}</strong><span>Employees</span></a>
+  <a class="info-box" href="{{url_for('hr_reviews')}}"><strong>{{ reviews|length }}</strong><span>Reviews</span></a>
+  <a class="info-box" href="{{url_for('hr_goals')}}"><strong>{{ goals|length }}</strong><span>Goals</span></a>
+  <a class="info-box" href="{{url_for('hr_report')}}"><strong>{{ report|length if report else 0 }}</strong><span>Departments</span></a>
+</div>
+
+<div class="section-label">Quick Access</div>
+<ul>
+  <li><a href="{{url_for('hr_employees')}}">View / Manage Employees</a></li>
+  <li><a href="{{url_for('hr_add_employee')}}">Add New Employee</a></li>
+  <li><a href="{{url_for('hr_reviews')}}">View All Performance Reviews</a></li>
+  <li><a href="{{url_for('hr_goals')}}">View All Goals</a></li>
+  <li><a href="{{url_for('hr_report')}}">Department Report</a></li>
+  <li><a href="{{url_for('hr_appeals')}}">Appeals</a></li>
+</ul>
+{% endblock %}
