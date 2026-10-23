@@ -17,8 +17,6 @@ def _attach_names(rows, id_field, name_field):
     return rows
 
 
-# ---------------------------------------------------------------- employees
-
 def count_employees():
     try:
         res = get_client().table("employees").select("emp_id", count="exact").execute()
@@ -109,8 +107,6 @@ def reset_password(emp_id, password_hash, salt):
     ).eq("emp_id", emp_id).execute()
 
 
-# --------------------------------------------------------------------- goals
-
 def create_goal(emp_id, assigned_by, title, description, target_date):
     payload = {
         "emp_id": emp_id,
@@ -194,8 +190,6 @@ def review_goal_progress(goal_id, approved, feedback):
     return True
 
 
-# ---------------------------------------------------------- performance reviews
-
 def create_review(emp_id, reviewer_id, review_period, rating, strengths,
                    improvements, comments):
     payload = {
@@ -264,8 +258,6 @@ def average_rating_by_department():
     return result
 
 
-# ------------------------------------------------------------------- feedback
-
 def create_feedback(emp_id, given_by, feedback_text):
     payload = {"emp_id": emp_id, "given_by": given_by, "feedback_text": feedback_text}
     res = get_client().table("feedback").insert(payload).execute()
@@ -303,8 +295,6 @@ def list_feedback_for_team(manager_id):
         item["employee_name"] = employee_names.get(item.get("emp_id"))
     return _attach_names(feedback, "given_by", "given_by_name")
 
-
-# ------------------------------------------------------------------ tasks
 
 def create_task(emp_id, assigned_by, title, description, priority="medium", due_date=None, status="pending"):
     payload = {
@@ -370,8 +360,6 @@ def update_task_status(task_id, emp_id, status):
         .execute()
     )
 
-
-# ------------------------------------------------------------ performance scores
 
 def create_performance_score(emp_id, education_score, work_score, misc_score, notes=None):
     total_score = round((education_score + work_score + misc_score) / 3, 2)
@@ -473,8 +461,6 @@ def get_task_recommendations(emp_id):
         recs.insert(0, "Team planning review")
     return recs[:6]
 
-
-# ------------------------------------------------------------------------- appeals
 
 def create_appeal(emp_id, raised_by, authority, subject, description, priority="normal", proof_path=None):
     payload = {

@@ -123,7 +123,6 @@ def dashboard():
     return redirect(url_for("employee_dashboard"))
 
 
-# Employee
 @app.route("/employee")
 @role_required("employee")
 def employee_dashboard():
@@ -225,7 +224,6 @@ def employee_appeals():
     return render_template("employee/appeals.html", user=user, appeals=appeals)
 
 
-# Manager
 @app.route("/manager")
 @role_required("manager")
 def manager_dashboard():
@@ -503,7 +501,6 @@ def manager_profile():
     return render_template("employee/profile.html", user=user, manager=manager, feedback=feedback)
 
 
-# HR
 @app.route("/hr")
 @role_required("hr")
 def hr_dashboard():
