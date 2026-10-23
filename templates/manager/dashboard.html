@@ -1,1 +1,20 @@
-{% extends 'base.html' %}{% block title %}Manager Dashboard{% endblock %}{% block content %}<h2>Manager Dashboard</h2><ul><li><a href="{{url_for('manager_team')}}">My Team</a></li><li><a href="{{url_for('manager_goals')}}">Assign Goal / View Team Goals</a></li><li><a href="{{url_for('manager_reviews')}}">Create / View Reviews</a></li><li><a href="{{url_for('manager_feedback')}}">Give Feedback</a></li><li><a href="{{url_for('manager_profile')}}">My Profile</a></li></ul><p>Team members: {{team|length}} | Goals: {{goals|length}} | Reviews written: {{reviews|length}}</p>{% endblock %}
+{% extends 'base.html' %}{% block title %}Manager Dashboard{% endblock %}{% block content %}
+<h2>Manager Dashboard</h2>
+<div class="dashboard-grid">
+  <a class="info-box" href="{{url_for('manager_team')}}"><strong>{{ team|length }}</strong><span>Team</span></a>
+  <a class="info-box" href="{{url_for('manager_goals')}}"><strong>{{ goals|length }}</strong><span>Goals to review</span></a>
+  <a class="info-box" href="{{url_for('manager_reviews')}}"><strong>{{ reviews|length }}</strong><span>Reviews</span></a>
+  <a class="info-box" href="{{url_for('manager_tasks')}}"><strong>{{ tasks|length }}</strong><span>Tasks</span></a>
+</div>
+
+<div class="section-label">Quick Access</div>
+<ul>
+  <li><a href="{{url_for('manager_team')}}">My Team</a></li>
+  <li><a href="{{url_for('manager_goals')}}">Assign Goal / View Team Goals</a></li>
+  <li><a href="{{url_for('manager_reviews')}}">Create / View Reviews</a></li>
+  <li><a href="{{url_for('manager_feedback')}}">Give Feedback</a></li>
+  <li><a href="{{url_for('manager_tasks')}}">Assign Tasks</a></li>
+  <li><a href="{{url_for('manager_appeals')}}">Appeals / Escalations</a></li>
+  <li><a href="{{url_for('manager_profile')}}">My Profile</a></li>
+</ul>
+{% endblock %}

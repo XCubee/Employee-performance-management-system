@@ -1,0 +1,26 @@
+{% extends 'base.html' %}{% block title %}Appeals / Escalations{% endblock %}{% block content %}
+<h2>Appeal / Grievance Escalation</h2>
+<form method="post" enctype="multipart/form-data">
+  <p><label>Employee<br><select name="emp_id" required>{% for e in team %}<option value="{{ e.emp_id }}">{{ e.name }}</option>{% endfor %}</select></label></p>
+  <p><label>Escalate to<br><select name="authority">
+    <option>HR</option>
+    <option>General Manager</option>
+    <option>Senior Director</option>
+    <option>Other</option>
+  </select></label></p>
+  <p><label>Subject<br><input name="subject" required></label></p>
+  <p><label>Description<br><textarea name="description" rows="5" required></textarea></label></p>
+  <p><label>Photo proof (optional, JPG/PNG/WebP, max 5 MB)<br><input type="file" name="proof" accept="image/jpeg,image/png,image/webp"></label></p>
+  <button type="submit">Escalate Appeal</button>
+</form>
+
+<h3>Team Appeals</h3>
+{% if appeals %}
+<table border="1">
+  <tr><th>Employee</th><th>Authority</th><th>Subject</th><th>Status</th><th>Proof</th></tr>
+  {% for a in appeals %}
+  <tr><td>{{ a.employee_name or a.emp_id }}</td><td>{{ a.authority }}</td><td>{{ a.subject }}</td><td>{{ a.status }}</td><td>{% if a.proof_url %}<a href="{{ a.proof_url }}" target="_blank" rel="noopener">View image</a>{% else %}-{% endif %}</td></tr>
+  {% endfor %}
+</table>
+{% else %}<p>No appeals for your team yet.</p>{% endif %}
+{% endblock %}

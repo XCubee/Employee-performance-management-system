@@ -1,1 +1,25 @@
-{% extends 'base.html' %}{% block title %}Profile{% endblock %}{% block content %}<h2>My Profile</h2><dl><dt>Name</dt><dd>{{user.name}}</dd><dt>Email</dt><dd>{{user.email}}</dd><dt>Role</dt><dd>{{user.role}}</dd><dt>Department</dt><dd>{{user.department or '-'}}</dd><dt>Designation</dt><dd>{{user.designation or '-'}}</dd><dt>Manager</dt><dd>{{manager.name if manager else '-'}}</dd><dt>Date Joined</dt><dd>{{user.date_joined}}</dd></dl>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h2>My Profile</h2>
+<dl>
+  <dt>Name</dt><dd>{{ user.name }}</dd>
+  <dt>Email</dt><dd>{{ user.email }}</dd>
+  <dt>Role</dt><dd>{{ user.role }}</dd>
+  <dt>Department</dt><dd>{{ user.department or '-' }}</dd>
+  <dt>Designation</dt><dd>{{ user.designation or '-' }}</dd>
+  <dt>Manager</dt><dd>{{ manager.name if manager else '-' }}</dd>
+  <dt>Date Joined</dt><dd>{{ user.date_joined }}</dd>
+</dl>
+
+<h3>Feedback</h3>
+{% if feedback %}
+<ul class="employee-feedback-list">
+  {% for item in feedback %}
+  <li><p>{{ item.feedback_text }}</p><span>{{ item.given_by_name or 'Unknown' }} · {{ item.created_at or 'Date unavailable' }}</span></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No feedback recorded.</p>
+{% endif %}
+{% endblock %}

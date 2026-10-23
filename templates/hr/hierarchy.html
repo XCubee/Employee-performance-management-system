@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block title %}Employee Hierarchy{% endblock %}
+{% block content %}
+<style>
+  .org-chart {
+    overflow-x: auto;
+    padding: 12px 0 24px;
+  }
+
+  .org-branch {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 36px 0 0;
+    list-style: none;
+  }
+
+  .org-tree {
+    width: max-content;
+    min-width: 100%;
+    padding-top: 0;
+  }
+
+  .org-person {
+    position: relative;
+    margin: 0;
+    padding: 36px 12px 0;
+    text-align: center;
+  }
+
+  .org-person::before,
+  .org-person::after {
+    position: absolute;
+    top: 0;
+    right: 50%;
+    width: 50%;
+    height: 36px;
+    border-top: 1px solid #555;
+    content: "";
+  }
+
+  .org-person::after {
+    right: auto;
+    left: 50%;
+    border-left: 1px solid #555;
+  }
+
+  .org-person:only-child::before {
+    display: none;
+  }
+
+  .org-person:only-child {
+    padding-top: 36px;
+  }
+
+  .org-person:only-child::after {
+    width: 0;
+    border-top: 0;
+  }
+
+  .org-tree > .org-person:only-child {
+    padding-top: 0;
+  }
+
+  .org-tree > .org-person:only-child::after {
+    display: none;
+  }
+
+  .org-person:not(:only-child):first-child::before,
+  .org-person:not(:only-child):last-child::after {
+    border-top: 0;
+  }
+
+  .org-person:not(:only-child):last-child::before {
+    border-right: 1px solid #555;
+    border-radius: 0 5px 0 0;
+  }
+
+  .org-person:not(:only-child):first-child::after {
+    border-left: 1px solid #555;
+    border-radius: 5px 0 0;
+  }
+
+  .org-card {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 116px;
+    min-height: 76px;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--person-color);
+    background: #fff;
+  }
+
+  .org-avatar {
+    position: relative;
+    display: grid;
+    width: 50px;
+    height: 50px;
+    place-items: center;
+    margin-top: -1px;
+    border: 1px solid var(--person-color);
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .org-avatar::before {
+    position: absolute;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #6095ce;
+    content: "";
+  }
+
+  .org-avatar::after {
+    position: absolute;
+    bottom: 8px;
+    width: 24px;
+    height: 15px;
+    border-radius: 12px 12px 3px 3px;
+    background: #6095ce;
+    content: "";
+  }
+
+  .org-no-photo {
+    margin: 0 0 2px;
+    color: #6095ce;
+    font-size: 0.65rem;
+    line-height: 1;
+  }
+
+  .org-card strong {
+    width: 100%;
+    padding: 3px 4px 0;
+    overflow-wrap: anywhere;
+    font-size: 0.68rem;
+    line-height: 1.2;
+  }
+
+  .org-card span {
+    width: 100%;
+    padding: 2px 4px 5px;
+    color: var(--muted);
+    font-size: 0.6rem;
+    line-height: 1.2;
+  }
+
+  .org-person.level-0 { --person-color: #5ca7db; }
+  .org-person.level-1 { --person-color: #57bd68; }
+  .org-person.level-2 { --person-color: #ff5590; }
+  .org-person.level-3 { --person-color: #777cff; }
+  .org-person.level-4 { --person-color: #f3a13b; }
+
+  @media (max-width: 760px) {
+    .org-chart {
+      margin-right: -16px;
+      margin-left: -16px;
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+
+    .org-person {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+  }
+</style>
+
+<h2>Employee Hierarchy</h2>
+<p>Active employees grouped by their reporting manager.</p>
+
+{% if hierarchy %}
+  {% macro render_hierarchy(nodes, depth=0) %}
+    <ul class="org-branch{% if depth == 0 %} org-tree{% endif %}">
+      {% for node in nodes %}
+        <li class="org-person level-{{ depth % 5 }}">
+          <div class="org-card">
+            <div class="org-avatar" aria-hidden="true"></div>
+            <small class="org-no-photo">No Photo</small>
+            <strong>{{ node.employee.name }}</strong>
+            <span>{{ node.employee.designation or node.employee.role|title }}</span>
+          </div>
+          {% if node.reports %}
+            {{ render_hierarchy(node.reports, depth + 1) }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endmacro %}
+
+  <div class="org-chart">
+    {{ render_hierarchy(hierarchy) }}
+  </div>
+{% else %}
+  <p>No active employees found.</p>
+{% endif %}
+{% endblock %}

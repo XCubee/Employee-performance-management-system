@@ -1,1 +1,33 @@
-{% extends 'base.html' %}{% block title %}Give Feedback{% endblock %}{% block content %}<h2>Give Feedback</h2>{% if team %}<form method="post"><p><label>Team member<br><select name="emp_id" required>{% for e in team %}<option value="{{e.emp_id}}">{{e.name}}</option>{% endfor %}</select></label></p><p><label>Feedback<br><textarea name="feedback_text" required></textarea></label></p><button>Record Feedback</button></form>{% else %}<p>No team members available.</p>{% endif %}{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Give Feedback{% endblock %}
+{% block content %}
+<h2>Give Feedback</h2>
+{% if team %}
+<form method="post">
+  <label>Team member
+    <select name="emp_id" id="feedback-employee" required>
+      {% for employee in team %}
+      <option value="{{ employee.emp_id }}" data-work-completion="{{ employee.work_completion }}">{{ employee.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <p>Work done: <strong id="feedback-work-completion">{{ team[0].work_completion }}%</strong></p>
+  <label>Feedback
+    <textarea name="feedback_text" required></textarea>
+  </label>
+  <button>Record Feedback</button>
+</form>
+<script>
+  const feedbackEmployee = document.getElementById("feedback-employee");
+  const workCompletion = document.getElementById("feedback-work-completion");
+  if (feedbackEmployee && workCompletion) {
+    feedbackEmployee.addEventListener("change", () => {
+      const selectedOption = feedbackEmployee.selectedOptions[0];
+      workCompletion.textContent = `${selectedOption.dataset.workCompletion}%`;
+    });
+  }
+</script>
+{% else %}
+<p>No team members available.</p>
+{% endif %}
+{% endblock %}

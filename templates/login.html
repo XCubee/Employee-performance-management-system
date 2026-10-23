@@ -1,2 +1,237 @@
-{% extends 'base.html' %}{% block title %}Login - EPMS{% endblock %}
-{% block content %}<h2>Login</h2><form method="post"><p><label>Email<br><input type="email" name="email" required></label></p><p><label>Password<br><input type="password" name="password" required></label></p><button type="submit">Log in</button></form>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Login - EPMS{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<style>
+  body.auth-page {
+    background: #ffffff;
+    color: #111111;
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+
+  body.auth-page header {
+    display: none;
+  }
+
+  body.auth-page main {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #ffffff;
+  }
+
+  .auth-shell {
+    width: 100%;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    background: #ffffff;
+  }
+
+  .auth-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 72px 72px 48px 72px;
+    background: #ffffff;
+  }
+
+  .auth-brand .eyebrow {
+    margin-bottom: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #111111;
+    font-weight: 700;
+  }
+
+  .auth-brand h1 {
+    margin: 0 0 26px;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    line-height: 0.92;
+    letter-spacing: -0.08em;
+    color: #111111;
+    font-weight: 800;
+  }
+
+  .auth-brand p {
+    max-width: 620px;
+    margin: 0;
+    color: #111111;
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .auth-brand .feature-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 80px;
+    flex-wrap: wrap;
+  }
+
+  .auth-brand .feature-pill {
+    min-width: 140px;
+    padding: 18px 20px;
+    border: 1px solid #111111;
+    background: #ffffff;
+    font-size: 1rem;
+    color: #111111;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .auth-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 52px;
+    background: #ffffff;
+    border-left: 1px solid #ececec;
+  }
+
+  .auth-card {
+    width: min(100%, 500px);
+    background: #ffffff;
+    padding: 0;
+    border: none;
+  }
+
+  .auth-card h2 {
+    margin: 0 0 16px;
+    font-size: clamp(2.3rem, 3vw, 3.6rem);
+    line-height: 1.1;
+    color: #111111;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+  }
+
+  .auth-card .subtitle {
+    margin: 0 0 30px;
+    color: #111111;
+    font-size: 1.18rem;
+    line-height: 1.5;
+  }
+
+  .auth-card form {
+    max-width: none;
+  }
+
+  .auth-card label {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #111111;
+    font-weight: 600;
+  }
+
+  .auth-card input {
+    width: 100%;
+    margin-top: 8px;
+    background: #f8f8f8;
+    border: 1px solid #d7d7d7;
+    border-radius: 0;
+    padding: 20px 18px;
+    font-size: 1.02rem;
+    color: #111111;
+    box-shadow: none;
+  }
+
+  .auth-card input::placeholder {
+    color: #777777;
+  }
+
+  .auth-card input:focus {
+    outline: none;
+    border-color: #111111;
+    background: #ffffff;
+  }
+
+  .auth-card button {
+    width: 100%;
+    margin-top: 12px;
+    background: #879a93;
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+    padding: 18px 20px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: none;
+  }
+
+  .flash {
+    margin: 0 0 20px;
+    padding: 10px 12px;
+    background: #f7f7f7;
+    border-left: 4px solid #111111;
+    color: #111111;
+    font-size: 0.95rem;
+  }
+
+  .flash.success {
+    border-left-color: #111111;
+    background: #f3f3f3;
+  }
+
+  @media (max-width: 900px) {
+    .auth-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .auth-brand {
+      padding: 48px 28px 24px;
+    }
+
+    .auth-panel {
+      padding: 24px 28px 48px;
+      border-left: none;
+      border-top: 1px solid #ececec;
+    }
+  }
+</style>
+
+<div class="auth-shell">
+  <div class="auth-brand">
+    <div class="eyebrow">Employee performance</div>
+    <h1>EPMS</h1>
+    <p>Track work output, goals, reviews, and team performance in one simple platform built for managers, HR, and employees.</p>
+
+    <div class="feature-row">
+      <div class="feature-pill">Goals</div>
+      <div class="feature-pill">Reviews</div>
+      <div class="feature-pill">Feedback</div>
+    </div>
+  </div>
+
+  <div class="auth-panel">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to continue to your dashboard.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <p class="flash {{ category }}"><strong>{{ category|upper }}:</strong> {{ message }}</p>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="post">
+        <label>
+          Email
+          <input type="email" name="email" placeholder="name@company.com" required>
+        </label>
+
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Enter your password" required>
+        </label>
+
+        <button type="submit">Log in</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

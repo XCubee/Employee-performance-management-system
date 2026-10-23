@@ -8,220 +8,430 @@
 
   <style>
     :root {
-      --ink: #02090c;
-      --muted: #111314;
-      --paper: #5315b6;
-      --panel: #ffffff;
-      --line: #03170d;
-      --accent: #ddd8de;
-      --accent-soft: #e4f0ed;
+      --bg: #ffffff;
+      --ink: #111111;
+      --muted: #444444;
+      --line: #d9d9d9;
+      --panel: #f6f6f6;
+      --soft: #efefef;
     }
 
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--paper);
-      font: 16px/1.55 "Trebuchet MS", sans;
+      min-height: 100vh;
+      line-height: 1.5;
     }
 
-    /* LEFT SIDEBAR */
+    body.auth-page {
+      background: #ffffff;
+    }
+
     header {
-      width: 240px;
-      height: 100vh;
       position: fixed;
       left: 0;
       top: 0;
-      padding: 25px 15px;
-      background: var(--panel);
-      border-right: 1px solid var(--line);
+      width: 260px;
+      height: 100vh;
+      padding: 18px 18px 14px 18px;
+      background: var(--bg);
+      border-right: 1px solid #b8b8b8;
       overflow-y: auto;
     }
 
-    /* WEBSITE TITLE */
     h1 {
-      margin-top: 0;
-      margin-bottom: 30px;
-      font-size: 22px;
-      line-height: 1.3;
-      letter-spacing: .02em;
+      margin: 0 0 24px;
+      font-size: clamp(2.1rem, 2.2vw, 3.1rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      font-weight: 700;
+      color: var(--ink);
     }
 
     h2 {
-      color: var(--accent);
+      margin: 0 0 22px;
+      font-size: clamp(2rem, 2vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+      color: var(--ink);
     }
 
-    /* VERTICAL NAVIGATION */
     nav {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
+      margin-top: 16px;
     }
 
     nav a {
       display: block;
-      padding: 10px;
-      color: var(--accent);
-      font-weight: bold;
+      color: var(--ink);
       text-decoration: none;
-      border-radius: 4px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      opacity: 0.8;
     }
 
     nav a:hover {
-      background: var(--accent-soft);
-      color: #0d4e4c;
+      opacity: 1;
     }
 
-    /* USER INFORMATION */
     header p {
-      margin-top: 30px;
+      margin-top: 28px;
       color: var(--muted);
-      overflow-wrap: anywhere;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
 
-    /* MAIN CONTENT */
     main {
-      width: auto;
-      min-height: 60vh;
-      margin: 30px 20px 30px 260px;
-      padding: clamp(1.5rem, 3vw, 2.25rem);
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      box-shadow: 0 8px 24px rgba(80, 188, 234, 0.05);
+      margin-left: 260px;
+      padding: 24px 36px 48px;
+      min-height: 100vh;
+      background: var(--bg);
     }
 
-    h1, h2 {
-      line-height: 1.2;
+    body.auth-page header {
+      display: none;
+    }
+
+    body.auth-page main {
+      margin-left: 0;
+      padding: 0;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+      margin-bottom: 28px;
+    }
+
+    main h3 {
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+    }
+
+    main ul, main ol {
+      margin: 0.8rem 0 1rem 1.4rem;
+      padding: 0;
+    }
+
+    main li {
+      margin: 0.35rem 0;
+      color: var(--ink);
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: minmax(140px, 180px) 1fr;
+      gap: 10px 18px;
+      margin: 1rem 0;
+      max-width: 700px;
+    }
+
+    dt {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    dd {
+      margin: 0;
+      color: var(--ink);
+    }
+
+    main p,
+    main td,
+    main th,
+    main dd,
+    main li {
+      color: var(--ink);
+    }
+
+    .info-box {
+      min-height: 150px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 18px 12px;
+      text-align: center;
+    }
+
+    a.info-box {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a.info-box:hover, a.info-box:focus-visible {
+      border-color: var(--ink);
+      background: var(--soft);
+    }
+
+    .info-box strong {
+      font-size: clamp(1.1rem, 1.8vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .info-box span {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .section-label {
+      margin-top: 22px;
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
     form {
-      max-width: 620px;
+      max-width: 640px;
+    }
+
+    .assignment-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+      gap: 28px;
+      align-items: start;
+      max-width: none;
+    }
+
+    .assignment-layout section {
+      min-width: 0;
+    }
+
+    .assignment-layout section:first-child {
+      overflow-x: auto;
+    }
+
+    .assignment-layout table {
+      width: 100%;
+    }
+
+    .assignment-sidebar {
+      display: grid;
+      gap: 24px;
+      align-content: start;
+    }
+
+    .employee-detail-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .employee-detail-card h3 {
+      margin-top: 0;
+      margin-bottom: 4px;
+    }
+
+    .employee-detail-card h4 {
+      margin: 22px 0 8px;
+    }
+
+    .employee-detail-card dl {
+      grid-template-columns: minmax(105px, 135px) 1fr;
+      gap: 8px 12px;
+      margin-bottom: 0;
+    }
+
+    .employee-active-tasks {
+      margin-left: 0;
+      list-style: none;
+    }
+
+    .employee-active-tasks li {
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .employee-active-tasks span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .employee-active-tasks p {
+      margin: 6px 0 0;
+    }
+
+    .candidate-view-button {
+      margin-top: 6px;
+      padding: 7px 12px;
+      font-size: 0.9rem;
+    }
+
+    .employee-profile-dialog {
+      width: min(760px, calc(100% - 32px));
+      max-height: min(85vh, 900px);
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--ink);
+      overflow-y: auto;
+    }
+
+    .employee-profile-dialog::backdrop {
+      background: rgb(0 0 0 / 45%);
+    }
+
+    .employee-profile-dialog .employee-detail-card {
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .dialog-close-button {
+      display: block;
+      margin: 0 0 12px auto;
+      padding: 8px 12px;
+    }
+
+    .employee-feedback-list {
+      margin-left: 0;
+      list-style: none;
+    }
+
+    .employee-feedback-list li {
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .employee-feedback-list p {
+      margin: 0 0 4px;
+    }
+
+    .employee-feedback-list span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1000px) {
+      .assignment-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     label {
       display: block;
-      color: var(--muted);
-      font-weight: bold;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+      color: var(--ink);
+      font-weight: 600;
     }
 
     input, select, textarea {
+      display: block;
       width: 100%;
-      margin-top: .8rem;
-      padding: .65rem .7rem;
+      margin-top: 8px;
+      padding: 14px 16px;
+      background: #f7f7f7;
+      border: 1px solid #d6d6d6;
+      border-radius: 0;
       color: var(--ink);
-      background: #fcfdfb;
-      border: 1px solid #bdc9c5;
-      border-radius: 4px;
       font: inherit;
     }
 
     input:focus, select:focus, textarea:focus {
-      outline: 6px solid var(--accent-soft);
-      border-color: var(--accent);
+      outline: none;
+      border-color: #111111;
+      background: #ffffff;
     }
 
     button {
-      padding: .65rem 1rem;
-      color: #fff;
-      background: var(--accent);
-      border: 0;
-      border-radius: 4px;
-      font: inherit;
-      font-weight: bold;
+      background: #929d96;
+      border: none;
+      color: #ffffff;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
+      border-radius: 0;
     }
 
-    button:hover {
-      background: #e4e6e5;
+    .flash {
+      margin: 0 0 18px;
+      padding: 10px 12px;
+      background: #f5f5f5;
+      border-left: 4px solid #111111;
+      color: var(--ink);
+    }
+
+    .flash.success {
+      background: #f2f2f2;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 1rem 0;
+      margin: 16px 0;
+      background: #ffffff;
     }
 
     th, td {
-      padding: .7rem .55rem;
+      padding: 12px 10px;
       border-bottom: 1px solid var(--line);
       text-align: left;
       vertical-align: top;
+      color: var(--ink);
     }
 
     th {
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    main > p strong:first-child {
-      color: var(--accent);
-    }
-
-    footer {
-      width: auto;
-      margin: 0 20px 2rem 260px;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: var(--muted);
     }
 
-    footer hr {
-      border: 0;
-      border-top: 1px solid var(--line);
+    a {
+      color: var(--ink);
     }
 
-    /* MOBILE VIEW */
-    @media (max-width: 650px) {
+    @media (max-width: 980px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
+    }
 
+    @media (max-width: 760px) {
       header {
         position: relative;
         width: 100%;
         height: auto;
-        padding: 20px;
         border-right: none;
         border-bottom: 1px solid var(--line);
       }
 
-      h1 {
-        margin-bottom: 20px;
-        font-size: 22px;
-      }
-
-      nav {
-        flex-direction: column;
-        gap: 5px;
-      }
-
-      nav a {
-        padding: 8px 10px;
-      }
-
-      header p {
-        margin-top: 20px;
-      }
-
       main {
-        width: calc(100% - 1rem);
-        margin: 1rem auto;
-        padding: 1rem;
-        overflow-x: auto;
+        margin-left: 0;
+        padding: 18px 16px 32px;
       }
 
-      footer {
-        width: calc(100% - 1.5rem);
-        margin: 0 auto 2rem;
-      }
-
-      table {
-        font-size: .9rem;
+      .dashboard-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
   <!-- VERTICAL SIDEBAR -->
   <header>
@@ -244,6 +454,10 @@
 
         <a href="{{ url_for('employee_feedback') }}">Feedback</a>
 
+        <a href="{{ url_for('employee_metrics') }}">Performance Metrics</a>
+
+        <a href="{{ url_for('employee_appeals') }}">Appeals / Grievances</a>
+
       {% elif current_user.role == 'manager' %}
 
         <a href="{{ url_for('manager_team') }}">My Team</a>
@@ -254,17 +468,25 @@
 
         <a href="{{ url_for('manager_feedback') }}">Feedback</a>
 
+        <a href="{{ url_for('manager_tasks') }}">Assign Tasks</a>
+
+        <a href="{{ url_for('manager_appeals') }}">Appeals / Escalations</a>
+
         <a href="{{ url_for('manager_profile') }}">Profile</a>
 
       {% else %}
 
         <a href="{{ url_for('hr_employees') }}">Employees</a>
 
+        <a href="{{ url_for('hr_hierarchy') }}">Manager Hierarchy</a>
+
         <a href="{{ url_for('hr_reviews') }}">Reviews</a>
 
         <a href="{{ url_for('hr_goals') }}">Goals</a>
 
         <a href="{{ url_for('hr_report') }}">Department Report</a>
+
+        <a href="{{ url_for('hr_appeals') }}">Appeals</a>
 
       {% endif %}
 

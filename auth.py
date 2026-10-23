@@ -18,8 +18,12 @@ def verify_password(password, salt, expected_hash):
     return digest == expected_hash
 
 
+
 def login(email, password):
-    emp = queries.get_employee_by_email(email)
+    try:
+        emp = queries.get_employee_by_email(email)
+    except Exception:
+        return None
     if not emp or not emp["active"]:
         return None
     if verify_password(password, emp["salt"], emp["password_hash"]):

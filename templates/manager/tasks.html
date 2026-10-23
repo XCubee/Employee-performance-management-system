@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Assign Tasks{% endblock %}
+{% block content %}
+<h2>Assign Task / Work Item</h2>
+{% if candidates %}
+<form method="post" class="assignment-layout" id="task-assignment-form">
+  <section>
+    <h3>Candidate fit</h3>
+    <p>Scores combine skill overlap with current workload. Select an employee or view their details before assigning work.</p>
+    <table border="1">
+      <tr><th>Select</th><th>Candidate</th><th>Skills</th><th>Active assignments</th><th>Open tasks</th><th>Fit score</th></tr>
+      {% for candidate in candidates %}
+      <tr>
+        <td><input type="radio" name="emp_id" value="{{ candidate.emp_id }}" aria-label="Select {{ candidate.name }}" {% if selected_emp_id == candidate.emp_id %}checked{% endif %} required></td>
+        <td>
+          {{ candidate.name }}<br>{{ candidate.designation or candidate.department or '-' }}
+          <br><button type="button" class="candidate-view-button" data-employee-id="{{ candidate.emp_id }}" aria-controls="assignment-profile-dialog" aria-haspopup="dialog">View profile</button>
+        </td>
+        <td>{{ candidate.skills or 'Not specified' }}</td>
+        <td>
+          {% if candidate.current_projects %}
+            {{ candidate.current_projects[:3]|join(', ') }}{% if candidate.current_projects|length > 3 %} and {{ candidate.current_projects|length - 3 }} more{% endif %}
+          {% else %}No active tasks{% endif %}
+        </td>
+        <td>{{ candidate.active_tasks }}</td>
+        <td><strong>{{ candidate.fit_score }} / 100</strong>{% if loop.first %}<br>Best fit{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <section class="assignment-sidebar">
+    <section class="task-assignment-fields">
+      <h3>Additional task</h3>
+      <label>Task title<input name="title" value="{{ title }}" required></label>
+      <label>Description<textarea name="description" rows="4">{{ description }}</textarea></label>
+      <label>Priority<select name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+      <label>Due date<input type="date" name="due_date"></label>
+      <button type="submit" name="action" value="score">Score candidates</button>
+      <button type="submit" name="action" value="assign">Assign task</button>
+    </section>
+  </section>
+</form>
+
+<dialog class="employee-profile-dialog" id="assignment-profile-dialog" aria-label="Candidate profile">
+  <button type="button" class="dialog-close-button" aria-label="Close profile">Close</button>
+  {% for candidate in candidates %}
+  <article class="employee-detail-card" data-employee-details="{{ candidate.emp_id }}" hidden>
+    <h3>{{ candidate.name }}</h3>
+    <p>{{ candidate.designation or 'Employee' }}{% if candidate.department %} · {{ candidate.department }}{% endif %}</p>
+    <dl>
+      <dt>Email</dt><dd>{{ candidate.email or '-' }}</dd>
+      <dt>Skills</dt><dd>{{ candidate.skills or 'Not specified' }}</dd>
+      <dt>Experience</dt><dd>{% if candidate.years_experience is not none %}{{ candidate.years_experience }} years{% else %}Not specified{% endif %}</dd>
+      <dt>Education</dt><dd>{{ candidate.education or 'Not specified' }}</dd>
+      <dt>Certifications</dt><dd>{{ candidate.certifications or 'None listed' }}</dd>
+      <dt>Training</dt><dd>{{ candidate.training_hours or 0 }} hours</dd>
+      <dt>Work done</dt><dd>{{ candidate.work_completion }}%</dd>
+      <dt>Open workload</dt><dd>{{ candidate.active_tasks }} active task{{ '' if candidate.active_tasks == 1 else 's' }}</dd>
+    </dl>
+    <h4>Current projects / active tasks</h4>
+    {% if candidate.active_task_details %}
+    <ul class="employee-active-tasks">
+      {% for task in candidate.active_task_details %}
+      <li>
+        <strong>{{ task.title }}</strong>
+        <span>{{ task.status|replace('_', ' ')|title }} · {{ task.priority|default('medium', true)|title }} priority</span>
+        {% if task.due_date %}<span>Due {{ task.due_date }}</span>{% endif %}
+        {% if task.description %}<p>{{ task.description }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No active projects or tasks.</p>
+    {% endif %}
+    <h4>Feedback</h4>
+    {% if candidate.feedback %}
+    <ul class="employee-feedback-list">
+      {% for item in candidate.feedback %}
+      <li><p>{{ item.feedback_text }}</p><span>{{ item.given_by_name or 'Unknown' }} · {{ item.created_at or 'Date unavailable' }}</span></li>
+      {% endfor %}
+    </ul>
+    {% else %}<p>No feedback recorded.</p>{% endif %}
+  </article>
+  {% endfor %}
+</dialog>
+{% else %}<p>No team members available.</p>{% endif %}
+
+<h3>Team Tasks</h3>
+{% if tasks %}
+<table border="1">
+  <tr><th>Employee</th><th>Task</th><th>Status</th><th>Priority</th><th>Due</th></tr>
+  {% for task in tasks %}
+  <tr><td>{{ task.employee_name or task.emp_id }}</td><td>{{ task.title }}</td><td>{{ task.status }}</td><td>{{ task.priority }}</td><td>{{ task.due_date or '-' }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}<p>No tasks assigned.</p>{% endif %}
+
+<script>
+  const assignmentProfileDialog = document.getElementById("assignment-profile-dialog");
+  if (assignmentProfileDialog) {
+    const detailCards = assignmentProfileDialog.querySelectorAll("[data-employee-details]");
+    document.querySelectorAll(".candidate-view-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        detailCards.forEach((card) => {
+          card.hidden = card.dataset.employeeDetails !== button.dataset.employeeId;
+        });
+        assignmentProfileDialog.showModal();
+      });
+    });
+    assignmentProfileDialog.querySelector(".dialog-close-button").addEventListener("click", () => {
+      assignmentProfileDialog.close();
+    });
+  }
+</script>
+{% endblock %}

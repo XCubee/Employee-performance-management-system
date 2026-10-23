@@ -1,0 +1,55 @@
+{% extends 'base.html' %}{% block title %}Performance Metrics{% endblock %}{% block content %}
+<h2>My Performance Metrics</h2>
+<p><strong>Department:</strong> {{ metrics.department }} | <strong>Designation:</strong> {{ metrics.designation or '-' }} | <strong>Experience:</strong> {{ metrics.years_experience }} years</p>
+
+<h3>Overall Score</h3>
+<p><strong>{{ metrics.score.total_score if metrics.score and metrics.score.total_score is not none else 0 }} / 100</strong></p>
+
+<table border="1">
+  <tr><th>Category</th><th>Score</th></tr>
+  <tr><td>Education & Training</td><td>{{ metrics.score.education_score if metrics.score and metrics.score.education_score is not none else 0 }}</td></tr>
+  <tr><td>Work Assigned / Performance</td><td>{{ metrics.score.work_score if metrics.score and metrics.score.work_score is not none else 0 }}</td></tr>
+  <tr><td>Additional & Miscellaneous</td><td>{{ metrics.score.misc_score if metrics.score and metrics.score.misc_score is not none else 0 }}</td></tr>
+</table>
+
+<h3>Summary</h3>
+<ul>
+  <li>Goals: {{ metrics.goals|length }}</li>
+  <li>Assigned Tasks: {{ metrics.total_tasks }}</li>
+  <li>Completed Tasks: {{ metrics.completed_tasks }}</li>
+  <li>Pending Tasks: {{ metrics.pending_tasks }}</li>
+  <li>In Progress: {{ metrics.in_progress_tasks }}</li>
+  <li>Overdue Tasks: {{ metrics.overdue_tasks }}</li>
+  <li>Work Completion: {{ metrics.work_completion }}%</li>
+  <li>Training Hours: {{ metrics.training_hours }}</li>
+</ul>
+
+<h3>Goals & Tasks</h3>
+{% if metrics.goals %}
+<table border="1">
+  <tr><th>Goal</th><th>Status</th><th>Progress</th></tr>
+  {% for goal in metrics.goals %}
+  <tr><td>{{ goal.title }}</td><td>{{ goal.status }}</td><td>{{ goal.progress or 0 }}%</td></tr>
+  {% endfor %}
+</table>
+{% else %}<p>No goals found.</p>{% endif %}
+
+{% if metrics.tasks %}
+<table border="1">
+  <tr><th>Task</th><th>Status</th><th>Priority</th><th>Due</th><th>Update status</th></tr>
+  {% for task in metrics.tasks %}
+  <tr><td>{{ task.title }}</td><td>{{ task.status|replace('_', ' ')|title }}</td><td>{{ task.priority or 'medium' }}</td><td>{{ task.due_date or '-' }}</td><td><form method="post" action="{{ url_for('employee_task_status', task_id=task.task_id) }}"><select name="status" aria-label="Status for {{ task.title }}"><option value="pending" {% if task.status == 'pending' %}selected{% endif %}>Pending</option><option value="not_started" {% if task.status == 'not_started' %}selected{% endif %}>Not started</option><option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In progress</option><option value="completed" {% if task.status == 'completed' %}selected{% endif %}>Completed</option></select><button type="submit">Save</button></form></td></tr>
+  {% endfor %}
+</table>
+{% else %}<p>No tasks assigned.</p>{% endif %}
+
+<h3>Performance Reviews</h3>
+{% if metrics.reviews %}
+<table border="1">
+  <tr><th>Period</th><th>Rating</th><th>Comments</th></tr>
+  {% for review in metrics.reviews %}
+  <tr><td>{{ review.review_period }}</td><td>{{ review.rating }}</td><td>{{ review.comments or '-' }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}<p>No performance reviews found.</p>{% endif %}
+{% endblock %}

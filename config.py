@@ -9,7 +9,7 @@ CONFIG_PATH = os.path.join(BASE_DIR, "config.ini")
 
 def get_supabase_config():
     if not os.path.exists(CONFIG_PATH):
-        sys.exit(f"config.ini not found at {CONFIG_PATH}. Please create it (see README.md).")
+        sys.exit(f"config.ini not found at {CONFIG_PATH}")
 
     parser = configparser.ConfigParser()
     parser.read(CONFIG_PATH)
